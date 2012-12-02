@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>Table</title>
+    <script type="text/javascript" src="./d3/d3.js"></script>
+    <style type="text/css">
+
+table {
+    border-collapse: collapse;
+    border: 2px black solid;
+
+}
+
+td, th {
+    padding: 10px 20px;
+    border: 1px black solid;
+}
+
+th {
+    font-weight: bold;
+    background-color: gray;
+}
+
+tbody {
+overflow-y: scroll; 
+overflow-x: hidden; 
+height: 100px;
+
+}
+
+
+    </style>
+  </head>
+  <body>
+    <div id="table" ></div>
+    <script type="text/javascript">
+
+    var columns=[];
+    var xmlhttp = new XMLHttpRequest();                                       
+    xmlhttp.onreadystatechange=function(){  
+	if (xmlhttp.readyState==4 && xmlhttp.status==200){    
+	    var array = JSON.parse(xmlhttp.responseText);
+	    for(i=0; i < array.length; i++){
+		if (array[i].column_name == "tid"){ continue;}
+		columns.push(array[i].column_name);
+	    }
+
+	    var table = d3.select("#table")
+		.append("table"),
+            thead = table.append("thead"),
+            tbody = table.append("tbody");
+
+	    // append the header row
+	    thead.append("tr")
+		.selectAll("th")
+		.data(columns)
+		.enter()
+		.append("th")
+		.text(function(column) { return column; });
+
+	    d3.json("getolddata.php?", function(data) {
+
+           var rows2 = tbody.selectAll("tr")
+            .data(data, function(d){return d.tid;})
+	    .enter()
+            .append("tr");
+
+
+    // create a cell in each row for each column
+         var cells = rows2.selectAll("td")
+            .data(function(row) {
+               return columns.map(function(column) {
+                   return {column: column, value: row[column]};
+               });
+           })
+           .enter()
+           .append("td")
+               .text(function(d) { return d.value; });
+
+         });
+
+	}
+    }
+
+    xmlhttp.open("GET", "getoldcolumn.php", true);
+    xmlhttp.send();
+
+
+
+    </script>
+  </body>
+</html>

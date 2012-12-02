@@ -1,0 +1,31 @@
+<html>
+<head>
+<script type="text/javascript">
+function init()
+{
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+    document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+    }
+  }
+xmlhttp.open("GET","gettable.php?",true);
+xmlhttp.send();
+}
+</script>
+</head>
+<body onload = "init();">
+
+<div id="txtHint"><b>this line should not appear</b></div>
+
+</body>
+</html>
